@@ -1,0 +1,15 @@
+../Core/Src/ch395.c:33:6:ch395_gpio_init	1
+../Core/Src/ch395.c:44:9:ch395_read_write_byte	1
+../Core/Src/ch395.c:56:6:ch395_write_cmd	1
+../Core/Src/ch395.c:70:6:ch395_write_data	1
+../Core/Src/ch395.c:80:9:ch395_read_data	1
+../Core/Src/ch395.c:92:6:ch395_keeplive_set	1
+../Core/Src/ch395.c:104:9:ch395q_socket_config	7
+../Core/Src/ch395.c:193:6:ch395_error	2
+../Core/Src/ch395.c:214:6:ch395_phy_status	6
+../Core/Src/ch395.c:248:6:ch395_socket_r_s_buf_modify	1
+../Core/Src/ch395.c:282:6:ch395_hardware_init	3
+../Core/Src/ch395.c:328:6:ch395_socket_interrupt	10
+../Core/Src/ch395.c:399:6:ch395_interrupt_handler	13
+../Core/Src/ch395.c:492:6:ch395q_handler	2
+../Core/Src/ch395.c:507:6:ch395_reconnection	16
