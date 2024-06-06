@@ -1,0 +1,11 @@
+#settings
+.settings/
+
+#Debug
+Debug/
+debug/
+Release/
+release
+
+#DAP烧录文件
+*.cfg

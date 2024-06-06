@@ -59,6 +59,8 @@
 
 /* USER CODE BEGIN PV */
 
+uint8_t device_type;	// 用于标识设备类型：0：开发板；1：第二代传感器
+
 uint16_t adc_buf[2];
 float accz_g, ntc;
 float Sen_1 = 0.026;
@@ -75,10 +77,10 @@ uint8_t datatemp[SIZE];
 uint32_t flash_size = 16 * 1024 * 1024;
 
 /* 本地网络信息：IP地址、网关地址、子网掩码和MAC地址 */
-uint8_t ch395_ipaddr[4]     = {192,168,3,105};
-uint8_t ch395_gw_ipaddr[4]  = {192,168,3,1};
+uint8_t ch395_ipaddr[4]     = {192,168,10,205};
+uint8_t ch395_gw_ipaddr[4]  = {192,168,10,1};
 uint8_t ch395_ipmask[4]     = {255,255,255,0};
-uint8_t ch395_macaddr[6]    = {0x0E,0x0E,0x0E,0x00,0x00,0x00};
+uint8_t ch395_macaddr[6]    = {0xA5,0xB5,0xC5,0x00,0x00,0x00};
 uint8_t ch395_sn[]          = {"VSP005"};
 /* 远程IP地址设置 */
 //uint8_t ch395_des_ipaddr[4] = {116,57,98,230};	// alphamini ip
@@ -87,7 +89,7 @@ uint8_t ch395_sn[]          = {"VSP005"};
 //uint16_t ch395_des_port = 14494;					// piremote port
 //uint8_t ch395_des_ipaddr[4] = {116,57,98,20};		// wgx ip
 //uint16_t ch395_des_port = 8080;						// wgx port
-uint8_t ch395_des_ipaddr[4] = {192,168,3,100};		// schoolpi ip
+uint8_t ch395_des_ipaddr[4] = {192,168,10,101};		// schoolpi ip
 uint16_t ch395_des_port = 1234;						// schoolpi port
 static uint8_t socket0_send_buf[7000];
 static uint8_t socket0_recv_buf[1024];
@@ -208,12 +210,20 @@ int main(void)
 
   // Flash Init
   W25QXX_Init();
-  while(W25QXX_ReadID() != W25Q128) {
+  while(W25QXX_ReadID() != W25Q128 && W25QXX_ReadID() != W25Q64) {
 	  printf("Flash Error!!\r\n");
 	  HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_SET);
 	  HAL_Delay(500);
 	  HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_RESET);
 	  HAL_Delay(500);
+  }
+  if(W25QXX_ReadID() == W25Q128) {
+	  device_type = 1;
+	  printf("This is Sensor2.0   device_type: 1\r\n");
+  }
+  else if(W25QXX_ReadID() == W25Q64) {
+	  device_type = 0;
+	  printf("This is Development board   device_type: 0\r\n");
   }
 
   // ADC Init (ADXL1002 + NTC)
@@ -225,7 +235,7 @@ int main(void)
   HAL_Delay(10);
 
   // Sensor Correct
-  Com_Value_Init_DMA();
+  if(device_type == 1) Com_Value_Init_DMA();	// 当设备是传感器时，需要进行单轴矫正
 
   // CH395 TCP Init
   printf("ch395_des_ipaddr: %d.%d.%d.%d\r\n", ch395_des_ipaddr[0], ch395_des_ipaddr[1], ch395_des_ipaddr[2], ch395_des_ipaddr[3]);
@@ -234,6 +244,7 @@ int main(void)
   spi1_read_write_byte(0Xff);
   ch395_hardware_init();
   do {
+	  if(device_type == 0) HAL_IWDG_Refresh(&hiwdg);	// 当设备是开发板时，此处需要喂狗，因为开发板由于未知原因，DHCP异常缓慢，容易导致看门狗复位
 	  ch395q_handler();
   } while(g_ch395q_sta.dhcp_status == DHCP_STA);                                                                       /* 获取DHCP */
 
@@ -336,6 +347,7 @@ int main(void)
 		  test_z = data_z;
 		  test_x = data_x;
 		  test_y = data_y;
+		  if(device_type == 0) {data_z = 65.65; data_x = 66.66; data_y = 67.67;}	// 当设备是开发板时，需要生成伪数据进行发送
 		  sprintf((ptr + 6 + 18 + 7 + 1 + i * 7), "%c%c%c%c%c%c|", int_separate(data_z), dec_separate(data_z),
 				  	  	  	  	  	  	  	  	  	  	  	   	   int_separate(data_x), dec_separate(data_x),
 																   int_separate(data_y), dec_separate(data_y));

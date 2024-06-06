@@ -1,7 +1,0 @@
-../Core/Src/spi.c:31:6:MX_SPI1_Init	2
-../Core/Src/spi.c:63:6:MX_SPI2_Init	2
-../Core/Src/spi.c:95:6:HAL_SPI_MspInit	3
-../Core/Src/spi.c:151:6:HAL_SPI_MspDeInit	3
-../Core/Src/spi.c:204:6:spi1_set_speed	1
-../Core/Src/spi.c:218:9:spi1_read_write_byte	1
-../Core/Src/spi.c:230:9:SPI2_ReadWriteByte	1

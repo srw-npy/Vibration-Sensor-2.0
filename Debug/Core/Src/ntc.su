@@ -1,3 +1,0 @@
-../Core/Src/ntc.c:4:7:temp_Get_R	32	static
-../Core/Src/ntc.c:16:8:myln	64	static
-../Core/Src/ntc.c:34:7:Get_Kelvin_Temperature	48	static

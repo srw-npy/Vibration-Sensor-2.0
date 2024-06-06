@@ -1,4 +1,0 @@
-../Core/Src/misc.c:19:6:int_separate	24	static
-../Core/Src/misc.c:31:6:dec_separate	32	static
-../Core/Src/misc.c:45:6:rtime_calculate	24	static
-../Core/Src/misc.c:58:6:Com_Value_Init_DMA	56	static
