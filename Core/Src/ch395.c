@@ -25,6 +25,8 @@
 
 struct ch395q_t g_ch395q_sta;
 
+extern uint8_t work_mode;
+
 /**
  * @brief       ch395_gpio初始化
  * @param       无
@@ -422,7 +424,7 @@ void ch395_interrupt_handler(void)
     {
 
         i = ch395_get_dhcp_status();
-        i = DHCP_DOWN;
+        if(work_mode == 0) i = DHCP_DOWN;
 
         switch (i)
         {
